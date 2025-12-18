@@ -1,32 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>User Friendly System Call Interface for Enhanced Security</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    /* ---------- Base & theme ---------- */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg:#020617; --accent:#38bdf8; --accent-strong:#0ea5e9; --text:#e5e7eb;
-      --muted:#9ca3af; --border:rgba(148,163,184,0.3); --radius-lg:22px; --radius-md:16px;
-      --shadow-soft:0 18px 55px rgba(15,23,42,0.9);
+      --bg: #020617;
+      --accent: #38bdf8;
+      --accent-strong: #0ea5e9;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: rgba(148,163,184,0.3);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --shadow-soft: 0 18px 55px rgba(15,23,42,0.9);
     }
     html,body{height:100%}
     body {
-      min-height:100vh; font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      min-height:100vh;
+      font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       color:var(--text);
       background:
         radial-gradient(circle at top, rgba(56,189,248,0.08), transparent 55%),
         radial-gradient(circle at bottom right, rgba(129,140,248,0.12), transparent 60%),
         var(--bg);
-      overflow-x:hidden; scroll-behavior:smooth;
+      overflow-x:hidden;
+      scroll-behavior:smooth;
+      padding-bottom:80px;
     }
+
+    /* ---------- Decorative orbs ---------- */
     .bg-orbs{ position:fixed; inset:0; pointer-events:none; z-index:-1; }
     .bg-orb{ position:absolute; border-radius:999px; filter:blur(48px); opacity:0.75; }
     .bg-orb.one{ width:420px;height:420px;background:radial-gradient(circle, rgba(56,189,248,0.35), transparent 60%); top:-120px; left:-80px; }
     .bg-orb.two{ width:360px;height:360px;background:radial-gradient(circle, rgba(129,140,248,0.35), transparent 60%); bottom:-120px; right:-60px; }
-    header{ position:sticky; top:0; z-index:40; backdrop-filter:blur(22px); background:linear-gradient(to bottom, rgba(15,23,42,0.96), rgba(15,23,42,0.86), transparent); border-bottom:1px solid rgba(15,23,42,0.9); }
+
+    /* ---------- Header / nav ---------- */
+    header{ position:sticky; top:0; z-index:60; backdrop-filter:blur(22px); background:linear-gradient(to bottom, rgba(15,23,42,0.96), rgba(15,23,42,0.86), transparent); border-bottom:1px solid rgba(15,23,42,0.9); }
     .nav{ max-width:1160px; margin:0 auto; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
     .nav-left{ display:flex; align-items:center; gap:12px; }
     .logo-wrap{ position:relative; }
@@ -37,88 +51,119 @@
     .brand-sub{ font-size:11px; color:var(--muted); }
     .nav-links{ display:flex; align-items:center; gap:8px; font-size:13px; }
     .nav-links a{ position:relative; padding:7px 12px; border-radius:999px; text-decoration:none; color:var(--muted); border:1px solid transparent; transition:0.18s ease; }
-    .nav-links a span{ position:relative; z-index:1; }
-    .nav-links a::before{ content:""; position:absolute; inset:0; border-radius:999px; background:radial-gradient(circle at top, rgba(56,189,248,0.18), transparent 60%); opacity:0; transition:0.18s ease; }
     .nav-links a:hover{ color:var(--accent); border-color:rgba(56,189,248,0.4); }
-    .nav-links a:hover::before{ opacity:1; }
     .nav-links a.active{ color:#0b1120; border-color:rgba(56,189,248,0.95); background:linear-gradient(to right, #38bdf8, #0ea5e9); box-shadow:0 14px 32px rgba(56,189,248,0.65); }
+
+    /* ---------- Main layout ---------- */
     main{ max-width:1160px; margin:0 auto; padding:26px 20px 64px; display:flex; flex-direction:column; gap:30px; }
+
     section{ scroll-margin-top:96px; border-radius:var(--radius-lg); background:linear-gradient(135deg, rgba(15,23,42,0.96), rgba(15,23,42,0.98)); border:1px solid var(--border); box-shadow:var(--shadow-soft); padding:20px 20px 18px; opacity:0; transform:translateY(24px); transition:opacity 0.4s ease, transform 0.4s ease; }
     section.visible{ opacity:1; transform:translateY(0); }
+
+    /* ---------- Hero ---------- */
     .hero-section{ display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1.2fr); gap:26px; background:radial-gradient(circle at top left, rgba(56,189,248,0.18), transparent 60%), radial-gradient(circle at bottom right, rgba(129,140,248,0.16), transparent 60%), rgba(15,23,42,0.98); }
-    .hero-badge-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
-    .hero-badge{ display:inline-flex; align-items:center; gap:8px; padding:5px 12px; border-radius:999px; border:1px solid rgba(56,189,248,0.36); background:rgba(15,23,42,0.9); font-size:11px; color:var(--muted); }
-    .hero-dot{ width:8px; height:8px; border-radius:999px; background:radial-gradient(circle, #22c55e, #16a34a); box-shadow:0 0 14px rgba(34,197,94,0.75); }
-    .hero-tagline{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.16em; }
     .hero-title{ font-size:clamp(28px,3.6vw,36px); line-height:1.05; margin-bottom:10px; }
-    .hero-title span{ background:linear-gradient(to right, #38bdf8, #a855f7, #f97316); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .hero-sub{ font-size:14px; color:var(--muted); max-width:550px; margin-bottom:14px; }
-    .hero-highlight-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-bottom:16px; font-size:11px; }
-    .hero-pill{ border-radius:999px; padding:8px 10px; background:rgba(15,23,42,0.96); border:1px dashed rgba(148,163,184,0.6); display:flex; flex-direction:column; gap:2px; }
-    .hero-pill span{ text-transform:uppercase; letter-spacing:0.14em; font-size:9px; color:var(--muted); }
-    .hero-cta-row{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:8px; }
+    .hero-right{ position:relative; border-radius:var(--radius-lg); padding:16px 16px 14px; background:radial-gradient(circle at top, rgba(56,189,248,0.3), transparent 65%), rgba(15,23,42,0.96); border:1px solid rgba(148,163,184,0.45); box-shadow:var(--shadow-soft); overflow:hidden; }
+
+    /* ---------- Generic UI ---------- */
     .btn{ border:none; outline:none; cursor:pointer; border-radius:999px; font-size:13px; padding:9px 16px; display:inline-flex; align-items:center; gap:7px; text-decoration:none; transition:0.16s ease; white-space:nowrap; }
     .btn-primary{ background:linear-gradient(to right, #38bdf8, #0ea5e9); color:#0b1120; box-shadow:0 16px 32px rgba(56,189,248,0.7); }
     .btn-ghost{ background:rgba(15,23,42,0.96); color:var(--muted); border-radius:999px; border:1px solid rgba(148,163,184,0.75); }
-    .hero-meta-row{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; font-size:11px; color:var(--muted); margin-top:4px; }
-    .meta-dot{ width:5px; height:5px; border-radius:999px; background:rgba(148,163,184,0.95); }
-    .hero-right{ position:relative; border-radius:var(--radius-lg); padding:16px 16px 14px; background:radial-gradient(circle at top, rgba(56,189,248,0.3), transparent 65%), rgba(15,23,42,0.96); border:1px solid rgba(148,163,184,0.45); box-shadow:var(--shadow-soft); overflow:hidden; }
-    .hero-right-header{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:11px; color:var(--muted); margin-bottom:10px; }
-    .window-dots{ display:flex; gap:5px; }
-    .dot{ width:8px; height:8px; border-radius:999px; background:rgba(148,163,184,0.8); }
-    .dot.red{ background:#fb7185; } .dot.amber{ background:#facc15; } .dot.green{ background:#22c55e; }
-    pre{ font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size:11px; background:rgba(15,23,42,0.96); border-radius:14px; padding:12px; border:1px solid rgba(15,23,42,0.9); box-shadow:inset 0 0 0 1px rgba(15,23,42,0.9); overflow-x:auto; color:#e5e7eb; }
-    .section-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
-    .section-titles{ display:flex; flex-direction:column; gap:2px; }
-    .section-title{ font-size:16px; font-weight:600; }
-    .section-sub{ font-size:11px; text-transform:uppercase; letter-spacing:0.18em; color:var(--muted); }
-    .card{ border-radius:var(--radius-md); padding:10px 11px; background:radial-gradient(circle at top left, rgba(56,189,248,0.14), transparent 60%), rgba(15,23,42,0.98); border:1px solid rgba(148,163,184,0.45); display:flex; flex-direction:column; gap:5px; font-size:12px; }
-    .pill-row{ display:flex; flex-wrap:wrap; gap:8px; margin-top:2px; }
-    .pill{ font-size:11px; padding:6px 10px; border-radius:999px; background:rgba(15,23,42,0.96); border:1px solid rgba(148,163,184,0.6); color:#e5e7eb; }
-    .two-col{ display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:14px; margin-top:4px; }
-    .timeline{ display:flex; flex-direction:column; gap:6px; font-size:12px; }
-    .timeline-item{ display:grid; grid-template-columns:18px minmax(0,1fr); gap:8px; align-items:flex-start; }
-    .timeline-marker{ width:18px; height:18px; border-radius:999px; border:1px solid rgba(56,189,248,0.8); display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--accent); background:rgba(15,23,42,0.96); }
-    .security-tabs{ display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
-    .tab{ font-size:11px; padding:5px 10px; border-radius:999px; border:1px solid rgba(148,163,184,0.65); background:rgba(15,23,42,0.96); color:var(--muted); cursor:pointer; transition:0.15s ease; }
-    .tab.active{ border-color:rgba(56,189,248,0.9); color:var(--accent); background:rgba(15,23,42,0.98); box-shadow:0 0 0 1px rgba(56,189,248,0.45); }
-    .tab-panels{ border-radius:14px; border:1px solid rgba(148,163,184,0.5); background:rgba(15,23,42,0.98); padding:10px 11px; font-size:12px; display:none; }
-    .tab-panels.active{ display:block; }
-    .security-badges{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; font-size:10px; }
-    .security-badge{ padding:4px 8px; border-radius:999px; border:1px solid rgba(56,189,248,0.55); background:rgba(15,23,42,0.96); color:var(--accent); }
-    .roadmap-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:4px; }
-    .roadmap-step{ border-radius:var(--radius-md); padding:10px; background:rgba(15,23,42,0.98); border:1px dashed rgba(148,163,184,0.7); font-size:12px; display:flex; flex-direction:column; gap:4px; }
-    .tech-row{ display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
-    .tech{ font-size:10px; padding:4px 8px; border-radius:999px; border:1px solid rgba(148,163,184,0.6); background:rgba(15,23,42,0.96); }
-    .contact-grid{ display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:16px; margin-top:4px; }
-    .form{ display:flex; flex-direction:column; gap:8px; font-size:12px; }
-    label{ font-size:11px; color:var(--muted); }
-    input, textarea, select { border-radius:10px; border:1px solid rgba(148,163,184,0.7); background:rgba(15,23,42,0.98); padding:8px 10px; font-size:12px; color:#e5e7eb; outline:none; transition:0.16s ease; }
+
+    label{ font-size:11px; color:var(--muted); display:block; margin-bottom:6px; }
+    input, textarea, select { border-radius:10px; border:1px solid rgba(148,163,184,0.7); background:rgba(15,23,42,0.98); padding:8px 10px; font-size:12px; color:#e5e7eb; outline:none; transition:0.16s ease; width:100%; }
     input:focus, textarea:focus, select:focus { border-color:rgba(56,189,248,0.8); box-shadow:0 0 0 1px rgba(56,189,248,0.4); }
-    textarea { min-height:80px; resize:vertical; }
-    .form-footer{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:6px; }
-    .form-hint{ font-size:11px; color:var(--muted); max-width:260px; }
-    .audit-list{ max-height:260px; overflow:auto; border-radius:8px; padding:8px; border:1px dashed rgba(148,163,184,0.06); background:rgba(255,255,255,0.01); }
-    table{ width:100%; border-collapse:collapse; }
-    th, td { padding:8px; text-align:left; border-bottom:1px solid rgba(148,163,184,0.04); font-size:13px; color:#d9e8f4; }
-    .metrics{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:10px; }
-    .metric{ background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.02)); padding:10px; border-radius:8px; text-align:center; }
-    .metric b{ display:block; font-size:18px; color:#e6f7ff; }
-    .log-success{ color:#8ff29a; } .log-fail{ color:#ff9b98; }
-    .note{ font-size:12px; color:var(--muted); }
+    textarea{ min-height:120px; resize:vertical; line-height:1.4; white-space:pre-wrap; word-break:break-word; }
+
+    /* ---------- Simulator card & fixes (KEY area) ---------- */
     .sim-card{ border-radius:14px; padding:14px; background:radial-gradient(circle at top left, rgba(56,189,248,0.06), transparent 60%), rgba(15,23,42,0.98); border:1px solid rgba(148,163,184,0.35); box-shadow:0 12px 32px rgba(2,6,23,0.6); }
-    .sim-grid{ display:grid; grid-template-columns:1fr 360px; gap:14px; align-items:start; }
-    @media (max-width:960px) { .hero-section{ grid-template-columns:minmax(0,1fr); } .hero-right{ order:-1; } .cards-grid, .roadmap-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } .two-col, .contact-grid{ grid-template-columns:minmax(0,1fr); } .sim-grid{ grid-template-columns:1fr; } .audit-list{ max-height:180px; } }
+
+    /* IMPORTANT FIXES:
+       - side-by-side layout, left simulator form fixed-ish width, right column fluid
+       - prevents right column squeezing and overlapping
+       - audit list scrolls instead of expanding
+    */
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr; /* left 420px (controls), right flexible (audit + metrics + result) */
+      gap: 18px;
+      align-items: start;
+      width: 100%;
+    }
+
+    /* ensure aside (right column) won't shrink too small and cause overlap */
+    .sim-grid aside {
+      min-width: 320px;
+    }
+
+    .audit-list {
+      max-height: 300px; /* restrict height to force scrollbar */
+      overflow: auto;
+      border-radius: 8px;
+      padding: 8px;
+      border: 1px dashed rgba(148,163,184,0.06);
+      background: rgba(255,255,255,0.01);
+    }
+
+    table { width: 100%; border-collapse: collapse; min-width: 560px; }
+    th, td { padding:8px; text-align:left; border-bottom:1px solid rgba(148,163,184,0.04); font-size:13px; color:#d9e8f4; }
+
+    .metrics { display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-top:10px; }
+    .metric { background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); padding:10px; border-radius:8px; text-align:center; }
+    .metric b { display:block; font-size:18px; color:#e6f7ff; }
+
+    /* make result pre-wrap safely to avoid horizontal overflow and merging */
+    #sim-resultDetail, pre { white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; }
+
+    /* contact grid: make sure form sits nicely on the right of page at full width */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 16px;
+      align-items: start;
+      width: 100%;
+    }
+
+    /* min-width guard for right-side contact area */
+    .contact-grid > .contact-info {
+      min-width: 280px;
+    }
+
+    /* ---------- Responsive behavior ---------- */
+    /* On narrower screens stack vertically to avoid squeezing */
+    @media (max-width: 1100px) {
+      .sim-grid { grid-template-columns: 1fr; }
+      .sim-grid aside { min-width: 100% !important; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .contact-grid > .contact-info { min-width: auto; }
+      table { min-width: 0; }
+      .audit-list { max-height: 220px; }
+    }
+
+    @media (max-width: 720px) {
+      .hero-section { grid-template-columns: 1fr; }
+      .hero-right { order:-1; }
+      .audit-list { max-height: 180px; }
+    }
+
+    /* minor helpers */
+    .small { font-size:12px; color:var(--muted); }
+    .log-success { color:#8ff29a; }
+    .log-fail { color:#ff9b98; }
+    footer{ max-width:1160px; margin:0 auto; padding:14px 20px 24px; font-size:11px; color:var(--muted); display:flex; justify-content:space-between; gap:10px; border-top:1px solid rgba(15,23,42,0.96); }
+    footer span{ opacity:0.9; }
   </style>
 </head>
 <body>
   <div class="bg-orbs"><div class="bg-orb one"></div><div class="bg-orb two"></div></div>
+
   <header>
     <div class="nav">
       <div class="nav-left">
         <div class="logo-wrap"><div class="logo-orb"></div><div class="logo">SC</div></div>
         <div class="brand"><div class="brand-title">System Call Interface</div><div class="brand-sub">User friendly · Security focused</div></div>
       </div>
+
       <nav class="nav-links">
         <a href="#overview" class="nav-link active"><span>Overview</span></a>
         <a href="#features" class="nav-link"><span>Features</span></a>
@@ -130,93 +175,158 @@
   </header>
 
   <main>
+    <!-- Hero & Intro -->
     <section class="hero-section reveal" id="overview">
       <div>
-        <div class="hero-badge-row"><div class="hero-badge"><span class="hero-dot"></span>Capstone concept · Operating systems · Security</div><div class="hero-tagline">User friendly system call interface for enhanced security</div></div>
-        <h1 class="hero-title">User Friendly <span>System Call Interface</span> For Enhanced Security</h1>
-        <p class="hero-sub">A secure abstraction layer that lets applications perform critical system operations through a controlled, human-friendly interface. Reduce complexity for developers while enforcing strict security policies at the OS boundary.</p>
-        <div class="hero-highlight-grid">
-          <div class="hero-pill"><span>Goal</span>Simplify dangerous system calls into safe, high-level operations.</div>
-          <div class="hero-pill"><span>Core</span>Policy-driven sandboxed execution for every request.</div>
-          <div class="hero-pill"><span>Focus</span>Least privilege, auditability, and secure defaults.</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="hero-badge"><span style="display:inline-block;width:8px;height:8px;border-radius:999px;background:radial-gradient(circle,#22c55e,#16a34a);margin-right:8px"></span>Capstone concept · Operating systems · Security</div>
+          <div class="hero-tagline small">User friendly system call interface for enhanced security</div>
         </div>
-        <div class="hero-cta-row"><button class="btn btn-primary" data-scroll="#architecture">View Architecture</button><button class="btn btn-ghost" data-scroll="#security">View Security Model</button></div>
-        <div class="hero-meta-row"><span>Ready to present in seminar, minor project, or viva.</span><span class="meta-dot"></span><span>Language agnostic APIs · Pluggable policy engine · Audited access</span></div>
+
+        <h1 class="hero-title">User Friendly <span style="background:linear-gradient(to right, #38bdf8, #a855f7, #f97316); -webkit-background-clip:text; color:transparent">System Call Interface</span> For Enhanced Security</h1>
+        <p class="small" style="max-width:640px;margin-top:8px;margin-bottom:12px;color:var(--muted)">A secure abstraction layer that lets applications perform critical system operations through a controlled, human-friendly interface. Reduce complexity for developers while enforcing strict security policies at the OS boundary.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+          <div class="hero-pill"><span class="small">Goal</span>Simplify dangerous system calls into safe, high-level operations.</div>
+          <div class="hero-pill"><span class="small">Core</span>Policy-driven sandboxed execution for every request.</div>
+          <div class="hero-pill"><span class="small">Focus</span>Least privilege, auditability, and secure defaults.</div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-bottom:8px">
+          <button class="btn btn-primary" data-scroll="#architecture">View Architecture</button>
+          <button class="btn btn-ghost" data-scroll="#security">View Security Model</button>
+        </div>
       </div>
+
       <div class="hero-right">
-        <div class="hero-right-header"><div class="window-dots"><span class="dot red"></span><span class="dot amber"></span><span class="dot green"></span></div><div class="hero-right-label">secure_syscall_demo.c</div><div class="hero-right-status">Live · Safe mode</div></div>
-        <pre><code><span class="k">int</span> main() {
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--muted);font-size:12px">
+          <div style="display:flex;gap:6px;align-items:center">
+            <span style="width:10px;height:10px;border-radius:999px;background:#fb7185"></span>
+            <span style="width:10px;height:10px;border-radius:999px;background:#facc15"></span>
+            <span style="width:10px;height:10px;border-radius:999px;background:#22c55e"></span>
+          </div>
+          <div>secure_syscall_demo.c</div>
+          <div style="background:rgba(15,23,42,0.9); padding:6px 10px; border-radius:999px; border:1px solid rgba(22,163,74,0.12); color:#4ade80; font-size:12px">Live · Safe mode</div>
+        </div>
+
+        <pre><code>int main() {
   struct syscall_request req = {
-    .operation = <span class="s">"read_file"</span>,
-    .path      = <span class="s">"/var/app/config.yaml"</span>,
+    .operation = "read_file",
+    .path      = "/var/app/config.yaml",
     .flags     = SAFE_ONLY
   };
 
-  <span class="t">int</span> result = <span class="f">uif_secure_call</span>(&req);
+  int result = uif_secure_call(&req);
 
-  <span class="k">if</span> (result != 0) {
-    <span class="f">log_error</span>(<span class="s">"Policy denied: config.yaml"</span>);
+  if (result != 0) {
+    log_error("Policy denied: config.yaml");
   }
 
-  <span class="k">return</span> 0;
+  return 0;
 }</code></pre>
       </div>
     </section>
 
+    <!-- Features -->
     <section class="reveal" id="features">
-      <div class="section-head"><div class="section-titles"><div class="section-title">Project Overview</div><div class="section-sub">What this interface solves</div></div><div class="chip">Problem statement</div></div>
-      <div class="section-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div>
+          <div style="font-size:16px;font-weight:600">Project Overview</div>
+          <div class="small" style="color:var(--muted)">What this interface solves</div>
+        </div>
+        <div style="padding:6px 10px;border-radius:999px;border:1px solid rgba(56,189,248,0.36);color:var(--accent)">Problem statement</div>
+      </div>
+
+      <div style="color:var(--muted);font-size:13px;display:flex;flex-direction:column;gap:10px">
         <p>Traditional system calls are powerful but low-level and error-prone. One incorrect flag, unchecked pointer, or missing validation can lead to privilege escalation, data leakage, or system compromise. Most applications re-implement similar checks repeatedly, resulting in inconsistent and fragile security.</p>
         <p>This project introduces a user friendly system call interface that sits between applications and the operating system. It offers simple, high-level operations instead of raw syscalls, and enforces centrally managed security policies before any request is allowed to reach the kernel.</p>
-        <div class="pill-row"><div class="pill"><span>Key</span>Abstracts complex syscalls into readable actions</div><div class="pill"><span>Key</span>Applies role and context based access control</div><div class="pill"><span>Key</span>Logs and audits every sensitive operation</div><div class="pill"><span>Key</span>Reduces attack surface exposed to user space</div></div>
       </div>
     </section>
 
+    <!-- Architecture -->
     <section class="reveal" id="architecture">
-      <div class="section-head"><div class="section-titles"><div class="section-title">System Architecture</div><div class="section-sub">End-to-end flow from app to kernel</div></div><div class="chip">Design</div></div>
-      <div class="section-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div>
+          <div style="font-size:16px;font-weight:600">System Architecture</div>
+          <div class="small" style="color:var(--muted)">End-to-end flow from app to kernel</div>
+        </div>
+        <div style="padding:6px 10px;border-radius:999px;border:1px solid rgba(56,189,248,0.36);color:var(--accent)">Design</div>
+      </div>
+
+      <div style="color:var(--muted);font-size:13px;display:flex;flex-direction:column;gap:12px">
         <p>The interface is built as a thin, language-agnostic middleware that exposes safe APIs to applications and translates them into validated system calls. Every request passes through four core layers.</p>
-        <div class="cards-grid">
-          <div class="card"><div class="card-label">Layer 1 · Client</div><div class="card-title">User API Adapter</div><p>Simple function calls, CLI, or REST endpoints that wrap complex system operations into human readable actions.</p><div class="card-badge">Developer friendly</div></div>
-          <div class="card"><div class="card-label">Layer 2 · Guard</div><div class="card-title">Validation & Sanitization</div><p>Validates parameters, normalizes file paths, enforces size limits, and rejects malformed or risky requests.</p><div class="card-badge">Input hardening</div></div>
-          <div class="card"><div class="card-label">Layer 3 · Policy</div><div class="card-title">Security Policy Engine</div><p>Applies rules based on user role, time, resource, and action type before any system call is executed.</p><div class="card-badge">Least privilege</div></div>
-        </div>
-        <div class="two-col">
-          <div><div class="card"><div class="card-label">Layer 4 · Kernel bridge</div><div class="card-title">Controlled System Call Execution</div><p>Only after validation and policy checks, the request is translated into specific system calls with the minimum required privileges. A unified logging and monitoring layer records every approved or denied operation for later analysis.</p></div></div>
-          <div><div class="timeline"><div class="timeline-item"><div class="timeline-marker">1</div><div><div class="timeline-title">Application sends high-level request</div><p>Example: “read active service configuration” instead of manually calling open, read, and close.</p></div></div><div class="timeline-item"><div class="timeline-marker">2</div><div><div class="timeline-title">Interface validates and normalizes</div><p>Checks type, range, allowed path prefixes, and origin of the request (user, service, or process).</p></div></div><div class="timeline-item"><div class="timeline-marker">3</div><div><div class="timeline-title">Policy decision and logging</div><p>Applies rules, decides allow or deny, logs context and result, then performs controlled system calls.</p></div></div></div></div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+          <div class="card"><div style="font-size:12px;color:var(--muted);text-transform:uppercase">Layer 1 · Client</div><div style="font-weight:600;margin-top:6px">User API Adapter</div><p style="margin-top:8px;color:var(--muted);font-size:13px">Simple function calls, CLI, or REST endpoints that wrap complex system operations into human readable actions.</p></div>
+          <div class="card"><div style="font-size:12px;color:var(--muted);text-transform:uppercase">Layer 2 · Guard</div><div style="font-weight:600;margin-top:6px">Validation & Sanitization</div><p style="margin-top:8px;color:var(--muted);font-size:13px">Validates parameters, normalizes file paths, enforces size limits, and rejects malformed or risky requests.</p></div>
+          <div class="card"><div style="font-size:12px;color:var(--muted);text-transform:uppercase">Layer 3 · Policy</div><div style="font-weight:600;margin-top:6px">Security Policy Engine</div><p style="margin-top:8px;color:var(--muted);font-size:13px">Applies rules based on user role, time, resource, and action type before any system call is executed.</p></div>
         </div>
       </div>
     </section>
 
+    <!-- Security -->
     <section class="reveal" id="security">
-      <div class="section-head"><div class="section-titles"><div class="section-title">Security Model</div><div class="section-sub">How security is enhanced</div></div><div class="chip">Security</div></div>
-      <div class="section-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div>
+          <div style="font-size:16px;font-weight:600">Security Model</div>
+          <div class="small" style="color:var(--muted)">How security is enhanced</div>
+        </div>
+        <div style="padding:6px 10px;border-radius:999px;border:1px solid rgba(56,189,248,0.36);color:var(--accent)">Security</div>
+      </div>
+
+      <div style="color:var(--muted);font-size:13px">
         <p>The design assumes that any application may be partially compromised. The interface therefore enforces strict controls even for trusted clients, turning dangerous system calls into safe, observable operations.</p>
-        <div class="security-tabs"><button class="tab active" data-tab="core">Core protections</button><button class="tab" data-tab="threats">Threats mitigated</button><button class="tab" data-tab="compliance">Visibility & compliance</button></div>
-        <div class="tab-panels active" id="tab-core"><ul><li>Role-based access control for each system operation (file, process, network, IPC).</li><li>Static allow-lists for files, directories, devices, and network destinations.</li><li>Rate limiting and throttling for sensitive actions like process spawning or privileged I/O.</li><li>Secure error messages that avoid leaking internal file paths or kernel details.</li><li>Structured audit logs with user, resource, action, decision, and timestamp.</li></ul></div>
-        <div class="tab-panels" id="tab-threats"><ul><li>Unauthorized file access and directory traversal using untrusted user input.</li><li>Abuse of powerful syscalls such as ptrace, chmod, or raw socket operations.</li><li>Privilege escalation caused by misconfigured OS permissions or legacy code.</li><li>Silent misuse of system calls with no monitoring or audit trail.</li></ul></div>
-        <div class="tab-panels" id="tab-compliance"><ul><li>Unified logging across all applications that consume the interface.</li><li>Easy export of audit data to SIEM or monitoring dashboards.</li><li>Central policies updated once and applied to all clients instantly.</li><li>Clear evidence for security reviews, internal audits, or academic evaluation.</li></ul></div>
-        <div class="security-badges"><div class="security-badge">Least privilege by default</div><div class="security-badge">Defense in depth</div><div class="security-badge">Centralized policy control</div><div class="security-badge">Full audit trail</div></div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="tab active" data-tab="core">Core protections</button>
+          <button class="tab" data-tab="threats">Threats mitigated</button>
+          <button class="tab" data-tab="compliance">Visibility & compliance</button>
+        </div>
+
+        <div id="tab-core" class="tab-panels active" style="margin-top:10px">
+          <ul style="color:var(--muted)"><li>Role-based access control for each system operation (file, process, network, IPC).</li><li>Static allow-lists for files, directories, devices, and network destinations.</li><li>Rate limiting and throttling for sensitive actions like process spawning or privileged I/O.</li><li>Secure error messages that avoid leaking internal file paths or kernel details.</li><li>Structured audit logs with user, resource, action, decision, and timestamp.</li></ul>
+        </div>
       </div>
     </section>
 
+    <!-- DEMO / SIMULATOR (FIXED) -->
     <section class="reveal" id="demo">
-      <div class="section-head"><div class="section-titles"><div class="section-title">Implementation Roadmap & Demo Contact</div><div class="section-sub">For academic or prototype builds</div></div><div class="chip">Roadmap · Demo</div></div>
-      <div class="section-body">
-        <div class="roadmap-grid"><div class="roadmap-step"><div class="step-badge">Phase A</div><div class="step-title">Minimal prototype</div><p>Implement safe file read/write and controlled process spawn with basic allow-lists and simple CLI test tools.</p></div><div class="roadmap-step"><div class="step-badge">Phase B</div><div class="step-title">Policy engine</div><p>Add YAML or JSON configuration format for fine-grained rules and integrate structured logging with log rotation.</p></div><div class="roadmap-step"><div class="step-badge">Phase C</div><div class="step-title">Developer toolkit</div><p>Provide SDK helpers, ready-made client libraries, example apps, and an interactive demo dashboard.</p></div></div>
-        <div class="tech-row"><div class="tech">C / C++ for core interface</div><div class="tech">JSON / YAML based policy configuration</div><div class="tech">REST / gRPC bindings for remote clients</div><div class="tech">Linux syscalls for prototype</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div>
+          <div style="font-size:16px;font-weight:600">Implementation Roadmap & Demo Contact</div>
+          <div class="small" style="color:var(--muted)">For academic or prototype builds</div>
+        </div>
+        <div style="padding:6px 10px;border-radius:999px;border:1px solid rgba(56,189,248,0.36);color:var(--accent)">Roadmap · Demo</div>
+      </div>
 
-        <div class="contact-grid">
+      <div style="color:var(--muted);font-size:13px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div class="roadmap-step"><div style="font-size:12px;color:var(--muted)">Phase A</div><div style="font-weight:600;margin-top:6px">Minimal prototype</div><p style="margin-top:8px;color:var(--muted)">Implement safe file read/write and controlled process spawn with basic allow-lists and simple CLI test tools.</p></div>
+          <div class="roadmap-step"><div style="font-size:12px;color:var(--muted)">Phase B</div><div style="font-weight:600;margin-top:6px">Policy engine</div><p style="margin-top:8px;color:var(--muted)">Add YAML or JSON configuration format for fine-grained rules and integrate structured logging with log rotation.</p></div>
+          <div class="roadmap-step"><div style="font-size:12px;color:var(--muted)">Phase C</div><div style="font-weight:600;margin-top:6px">Developer toolkit</div><p style="margin-top:8px;color:var(--muted)">Provide SDK helpers, ready-made client libraries, example apps, and an interactive demo dashboard.</p></div>
+        </div>
 
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+          <div class="tech">C / C++ for core interface</div>
+          <div class="tech">JSON / YAML based policy configuration</div>
+          <div class="tech">REST / gRPC bindings for remote clients</div>
+          <div class="tech">Linux syscalls for prototype</div>
+        </div>
+
+        <!-- CONTACT GRID: left=simulator, right=form (Option A side-by-side) -->
+        <div class="contact-grid" style="margin-top:8px">
+          <!-- Left: Simulator card -->
           <div class="sim-card">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px"><div style="font-weight:600">System Call Simulator</div><div style="font-size:12px;color:var(--muted)">Simulated and safe — suitable for demo</div></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px">
+              <div style="font-weight:600">System Call Simulator</div>
+              <div class="small" style="color:var(--muted)">Simulated and safe — suitable for demo</div>
+            </div>
 
             <div class="sim-grid">
+              <!-- Left column: controls -->
               <div>
                 <div style="display:flex;flex-direction:column;gap:10px">
                   <div>
-                    <label style="font-size:12px;color:var(--muted);margin-bottom:6px">Role</label>
-                    <select id="sim-role" style="width:100%;padding:10px;border-radius:10px;background:rgba(15,23,42,0.98);border:1px solid rgba(148,163,184,0.6);color:#e5e7eb">
+                    <label>Role</label>
+                    <select id="sim-role">
                       <option value="user">User</option>
                       <option value="service">Service</option>
                       <option value="admin">Admin</option>
@@ -224,8 +334,8 @@
                   </div>
 
                   <div>
-                    <label style="font-size:12px;color:var(--muted);margin-bottom:6px">Operation</label>
-                    <select id="sim-operation" style="width:100%;padding:10px;border-radius:10px;background:rgba(15,23,42,0.98);border:1px solid rgba(148,163,184,0.6);color:#e5e7eb">
+                    <label>Operation</label>
+                    <select id="sim-operation">
                       <option value="read_file">read_file</option>
                       <option value="write_file">write_file</option>
                       <option value="spawn_process">spawn_process</option>
@@ -234,44 +344,54 @@
                   </div>
 
                   <div>
-                    <label style="font-size:12px;color:var(--muted);margin-bottom:6px">Target (path / command / host)</label>
-                    <input id="sim-target" placeholder="/var/app/config.yaml or /home/app/data.txt or /tmp/newfile.txt or python_server.py or 10.0.0.5:80" style="width:100%;padding:10px;border-radius:10px;background:rgba(15,23,42,0.98);border:1px solid rgba(148,163,184,0.6);color:#e5e7eb">
+                    <label>Target (path / command / host)</label>
+                    <input id="sim-target" placeholder="/var/app/config.yaml or /home/app/data.txt or /tmp/newfile.txt or python_server.py or 10.0.0.5:80">
                   </div>
 
                   <div>
-                    <label style="font-size:12px;color:var(--muted);margin-bottom:6px">Optional Payload (write_file)</label>
-                    <textarea id="sim-payload" rows="3" placeholder="Text to write (simulated)" style="width:100%;padding:10px;border-radius:10px;background:rgba(15,23,42,0.98);border:1px solid rgba(148,163,184,0.6);color:#e5e7eb"></textarea>
+                    <label>Optional Payload (write_file)</label>
+                    <textarea id="sim-payload" rows="3" placeholder="Text to write (simulated)"></textarea>
                   </div>
 
                   <div style="display:flex;gap:10px">
                     <div style="flex:1">
-                      <label style="font-size:12px;color:var(--muted);margin-bottom:6px">Simulated Delay (ms)</label>
-                      <input id="sim-delay" type="number" value="80" min="0" style="width:100%;padding:10px;border-radius:10px;background:rgba(15,23,42,0.98);border:1px solid rgba(148,163,184,0.6);color:#e5e7eb">
+                      <label>Simulated Delay (ms)</label>
+                      <input id="sim-delay" type="number" value="80" min="0">
                     </div>
                     <div style="flex:1">
-                      <label style="font-size:12px;color:var(--muted);margin-bottom:6px">Bytes to Read (if file)</label>
-                      <input id="sim-bytes" type="number" value="128" min="0" style="width:100%;padding:10px;border-radius:10px;background:rgba(15,23,42,0.98);border:1px solid rgba(148,163,184,0.6);color:#e5e7eb">
+                      <label>Bytes to Read (if file)</label>
+                      <input id="sim-bytes" type="number" value="128" min="0">
                     </div>
                   </div>
 
-                  <div class="sim-controls">
+                  <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
                     <button id="sim-runBtn" class="btn btn-primary">Execute</button>
                     <button id="sim-clearLog" class="btn btn-ghost">Clear Audit</button>
                     <button id="sim-exportCsv" class="btn btn-ghost">Export CSV</button>
-                    <div style="margin-left:auto;font-size:12px;color:var(--muted)">Policies: role-based + path allow-list + rate-limit</div>
+                    <div style="margin-left:auto;color:var(--muted);font-size:12px">Policies: role-based + path allow-list + rate-limit</div>
                   </div>
 
                   <div style="margin-top:10px">
                     <div style="font-size:13px;font-weight:600;margin-bottom:6px">Result</div>
-                    <div id="sim-resultBox" style="min-height:80px;padding:10px;border-radius:8px;background:rgba(15,23,42,0.96);border:1px solid rgba(148,163,184,0.06)"><div id="sim-resultSummary" style="font-size:13px;color:var(--muted)">No execution yet.</div><pre id="sim-resultDetail" style="font-family:JetBrains Mono,monospace;background:transparent;border:none;padding:0;margin:0;color:#d8eefc"></pre></div>
+                    <div id="sim-resultBox" style="min-height:80px;padding:10px;border-radius:8px;background:rgba(15,23,42,0.96);border:1px solid rgba(148,163,184,0.06)">
+                      <div id="sim-resultSummary" style="font-size:13px;color:var(--muted)">No execution yet.</div>
+                      <pre id="sim-resultDetail" style="font-family:JetBrains Mono,monospace;background:transparent;border:none;padding:0;margin:0;color:#d8eefc"></pre>
+                    </div>
                   </div>
                 </div>
               </div>
 
+              <!-- Right column: audit + metrics (fluid column) -->
               <aside>
                 <div style="display:flex;flex-direction:column;gap:10px">
                   <div style="font-size:13px;font-weight:600">Audit Log</div>
-                  <div class="audit-list" id="sim-auditList"><table><thead><tr><th>Time</th><th>Role</th><th>Op</th><th>Target</th><th>Result</th><th>Latency</th><th>Bytes</th></tr></thead><tbody id="sim-auditBody"></tbody></table></div>
+                  <div class="audit-list" id="sim-auditList">
+                    <table>
+                      <thead><tr><th>Time</th><th>Role</th><th>Op</th><th>Target</th><th>Result</th><th>Latency</th><th>Bytes</th></tr></thead>
+                      <tbody id="sim-auditBody"></tbody>
+                    </table>
+                  </div>
+
                   <div style="font-size:13px;font-weight:600">Metrics</div>
                   <div class="metrics">
                     <div class="metric"><div class="small">Total Ops</div><b id="sim-mTotal">0</b></div>
@@ -286,40 +406,101 @@
             </div>
           </div>
 
-          <form class="form" id="demo-form">
-            <div class="form-row"><label for="name">Name</label><input id="name" type="text" placeholder="Enter your name"></div>
-            <div class="form-row"><label for="email">Email</label><input id="email" type="email" placeholder="you@example.com"></div>
-            <div class="form-row"><label for="role">I am a</label><select id="role"><option>Student</option><option>Faculty</option><option>Security Engineer</option><option>Developer</option><option>Other</option></select></div>
-            <div class="form-row"><label for="message">Message or feedback</label><textarea id="message" placeholder="Share feedback, ideas, or collaboration requests"></textarea></div>
-            <div class="form-footer"><button type="submit" class="btn btn-primary">Send Demo Request</button><div class="form-hint">In a real deployment this form can trigger automated test scenarios, send email, or open a ticket. Here it confirms that your UI is working.</div></div>
-          </form>
+          <!-- Right column: contact form (keeps to the right of sim-card in Option A) -->
+          <div class="contact-info" style="padding:12px;border-radius:12px;background:rgba(15,23,42,0.02);border:1px solid rgba(255,255,255,0.01)">
+            <form class="form" id="demo-form">
+              <div style="margin-bottom:8px">
+                <label for="name">Name</label>
+                <input id="name" type="text" placeholder="Enter your name">
+              </div>
+              <div style="margin-bottom:8px">
+                <label for="email">Email</label>
+                <input id="email" type="email" placeholder="you@example.com">
+              </div>
+              <div style="margin-bottom:8px">
+                <label for="role">I am a</label>
+                <select id="role">
+                  <option>Student</option>
+                  <option>Faculty</option>
+                  <option>Security Engineer</option>
+                  <option>Developer</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div style="margin-bottom:8px">
+                <label for="message">Message or feedback</label>
+                <textarea id="message" placeholder="Share feedback, ideas, or collaboration requests"></textarea>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;justify-content:flex-start">
+                <button type="submit" class="btn btn-primary">Send Demo Request</button>
+                <div class="form-hint" style="color:var(--muted);max-width:220px">In a real deployment this form can trigger automated test scenarios, send email, or open a ticket. Here it confirms that your UI is working.</div>
+              </div>
+            </form>
 
-          <div class="contact-info">
-            <p><strong>How to use this site in your project</strong><br>Link this page as the official overview for your topic. It clearly shows the problem, architecture, security model, and implementation roadmap of a user friendly system call interface.</p>
-            <p>You can extend the report with performance evaluation (latency overhead, throughput), OS used (Linux/Windows), and implementation details based on your actual code.</p>
-            <div class="contact-tags"><div class="contact-tag">Perfect for seminar and viva</div><div class="contact-tag">Attach URL or screenshots in report</div><div class="contact-tag">Use diagrams from architecture section</div></div>
+            <div style="margin-top:14px;color:var(--muted);font-size:13px">
+              <p><strong>How to use this site in your project</strong><br>Link this page as the official overview for your topic. It clearly shows the problem, architecture, security model, and implementation roadmap of a user friendly system call interface.</p>
+              <p>You can extend the report with performance evaluation (latency overhead, throughput), OS used (Linux/Windows), and implementation details based on your actual code.</p>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+                <div class="contact-tag" style="padding:6px 8px;border-radius:999px;border:1px dashed rgba(148,163,184,0.7)">Perfect for seminar and viva</div>
+                <div class="contact-tag" style="padding:6px 8px;border-radius:999px;border:1px dashed rgba(148,163,184,0.7)">Attach URL or screenshots in report</div>
+                <div class="contact-tag" style="padding:6px 8px;border-radius:999px;border:1px dashed rgba(148,163,184,0.7)">Use diagrams from architecture section</div>
+              </div>
+            </div>
           </div>
-
-        </div>
+        </div> <!-- end contact-grid -->
       </div>
     </section>
   </main>
 
   <footer><span>© 2025 User Friendly System Call Interface · Academic demo layout</span><span>Built for: enhanced security, simplicity, and cleaner OS interaction</span></footer>
 
+  <!-- ---------- JavaScript (logic unchanged) ---------- -->
   <script>
     const navLinks = document.querySelectorAll(".nav-link");
     const sections = document.querySelectorAll("main section");
-    navLinks.forEach(link => { link.addEventListener("click", e => { e.preventDefault(); const target = document.querySelector(link.getAttribute("href")); if(target) target.scrollIntoView({behavior:'smooth', block:'start'}); }); });
-    document.querySelectorAll("[data-scroll]").forEach(btn => { btn.addEventListener("click", () => { const target = document.querySelector(btn.getAttribute("data-scroll")); if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); });
-    const observer = new IntersectionObserver(entries => { entries.forEach(entry => { if (entry.isIntersecting) { const id = entry.target.getAttribute("id"); navLinks.forEach(link => { link.classList.toggle("active", link.getAttribute("href") === "#" + id); }); entry.target.classList.add("visible"); } }); }, { threshold: 0.4 });
+    navLinks.forEach(link => {
+      link.addEventListener("click", e => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute("href"));
+        if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+    document.querySelectorAll("[data-scroll]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = document.querySelector(btn.getAttribute("data-scroll"));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute("id");
+          navLinks.forEach(link => {
+            link.classList.toggle("active", link.getAttribute("href") === "#" + id);
+          });
+          entry.target.classList.add("visible");
+        }
+      });
+    }, { threshold: 0.4 });
     sections.forEach(sec => observer.observe(sec));
     const tabs = document.querySelectorAll(".tab");
     const panels = { core: document.getElementById("tab-core"), threats: document.getElementById("tab-threats"), compliance: document.getElementById("tab-compliance") };
-    tabs.forEach(tab => { tab.addEventListener("click", () => { const name = tab.getAttribute("data-tab"); tabs.forEach(t => t.classList.toggle("active", t === tab)); Object.entries(panels).forEach(([key, panel]) => { panel.classList.toggle("active", key === name); }); }); });
-    const demoForm = document.getElementById("demo-form");
-    demoForm.addEventListener("submit", e => { e.preventDefault(); alert("Demo request submitted successfully. In a real system this would contact the backend."); demoForm.reset(); });
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        const name = tab.getAttribute("data-tab");
+        tabs.forEach(t => t.classList.toggle("active", t === tab));
+        Object.entries(panels).forEach(([key, panel]) => panel && panel.classList.toggle("active", key === name));
+      });
+    });
 
+    const demoForm = document.getElementById("demo-form");
+    demoForm && demoForm.addEventListener("submit", e => {
+      e.preventDefault();
+      alert("Demo request submitted successfully. In a real system this would contact the backend.");
+      demoForm.reset();
+    });
+
+    /* Simulator logic */
     const roleEl = document.getElementById('sim-role');
     const opEl = document.getElementById('sim-operation');
     const targetEl = document.getElementById('sim-target');
@@ -335,7 +516,7 @@
 
     let audit = [];
     let metrics = { total:0, allowed:0, denied:0, totalLatency:0, bytes:0 };
-    const sampleFiles = { '/var/app/config.yaml':'app_config:\n  version: 1.2\nmaintainer: sysadmin', '/home/app/data.txt':'sample user data line 1\nsample line 2' };
+    const sampleFiles = { '/var/app/config.yaml':'app_config:\\n  version: 1.2\\nmaintainer: sysadmin', '/home/app/data.txt':'sample user data line 1\\nsample line 2' };
 
     function matchesAllowedPath(path, allowedPrefixes){ return allowedPrefixes.some(p=> path.startsWith(p)); }
     function policyDecision(role, op, target){
@@ -367,17 +548,107 @@
       return { allow:false, reason:'Unknown operation' };
     }
 
-    function appendAudit(entry){ audit.push(entry); const tr=document.createElement('tr'); tr.innerHTML=`<td>${entry.time}</td><td>${entry.role}</td><td>${entry.op}</td><td>${entry.target}</td><td class="${entry.allowed? 'log-success':'log-fail'}">${entry.allowed? 'Allowed':'Denied'}</td><td>${entry.latency}ms</td><td>${entry.bytes}</td>`; auditBody.prepend(tr); }
+    function appendAudit(entry){
+      audit.push(entry);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${entry.time}</td><td>${entry.role}</td><td>${entry.op}</td><td>${entry.target}</td><td class="${entry.allowed? 'log-success':'log-fail'}">${entry.allowed? 'Allowed':'Denied'}</td><td>${entry.latency}ms</td><td>${entry.bytes}</td>`;
+      auditBody.prepend(tr);
+    }
 
-    function updateMetrics(){ document.getElementById('sim-mTotal').textContent = metrics.total; document.getElementById('sim-mAllowed').textContent = metrics.allowed; document.getElementById('sim-mDenied').textContent = metrics.denied; document.getElementById('sim-mBytes').textContent = metrics.bytes; document.getElementById('sim-mLat').textContent = metrics.total? Math.round(metrics.totalLatency/metrics.total): '-'; document.getElementById('sim-mRate').textContent = metrics.total? Math.round((metrics.allowed/metrics.total)*100)+'%':'-'; }
+    function updateMetrics(){
+      document.getElementById('sim-mTotal').textContent = metrics.total;
+      document.getElementById('sim-mAllowed').textContent = metrics.allowed;
+      document.getElementById('sim-mDenied').textContent = metrics.denied;
+      document.getElementById('sim-mBytes').textContent = metrics.bytes;
+      document.getElementById('sim-mLat').textContent = metrics.total? Math.round(metrics.totalLatency/metrics.total): '-';
+      document.getElementById('sim-mRate').textContent = metrics.total? Math.round((metrics.allowed/metrics.total)*100)+'%':'-';
+    }
 
-    function simulateExecution(role,op,target,payload,delay,bytes){ const start=performance.now(); return new Promise(resolve=>{ setTimeout(()=>{ const end=performance.now(); const latency=Math.round(end-start); let output=''; let processedBytes=0; if(op==='read_file'){ const content = sampleFiles[target] || ('[SIMULATED FILE CONTENT] '.repeat(Math.max(1,Math.floor(bytes/20)))); processedBytes = Math.min(bytes, content.length); output = content.slice(0,processedBytes); } else if(op==='write_file'){ processedBytes = payload? payload.length : 0; output = `WROTE ${processedBytes} bytes to ${target} (simulated)`; } else if(op==='spawn_process'){ processedBytes = 0; output = `Spawned process: ${target} (pid: ${Math.floor(Math.random()*20000)+1000})`; } else if(op==='open_socket'){ processedBytes = 0; output = `Opened socket to ${target} (simulated handshake ok)`; } else { output='Unknown op'; } resolve({ latency, output, bytes: processedBytes }); }, Math.max(0, delay)); }); }
+    function simulateExecution(role,op,target,payload,delay,bytes){
+      const start = performance.now();
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const end = performance.now();
+          const latency = Math.round(end - start);
+          let output = '';
+          let processedBytes = 0;
+          if(op === 'read_file'){
+            const content = sampleFiles[target] || ('[SIMULATED FILE CONTENT] '.repeat(Math.max(1, Math.floor(bytes/20))));
+            processedBytes = Math.min(bytes, content.length);
+            output = content.slice(0, processedBytes);
+          } else if(op==='write_file'){
+            processedBytes = payload? payload.length : 0;
+            output = `WROTE ${processedBytes} bytes to ${target} (simulated)`;
+          } else if(op==='spawn_process'){
+            processedBytes = 0;
+            output = `Spawned process: ${target} (pid: ${Math.floor(Math.random()*20000)+1000})`;
+          } else if(op==='open_socket'){
+            processedBytes = 0;
+            output = `Opened socket to ${target} (simulated handshake ok)`;
+          } else {
+            output = 'Unknown op';
+          }
+          resolve({ latency, output, bytes: processedBytes });
+        }, Math.max(0, delay));
+      });
+    }
 
-    runBtn.addEventListener('click', async ()=>{ const role = roleEl.value; const op = opEl.value; const target = targetEl.value.trim(); const payload = payloadEl.value; const delay = Math.max(0, parseInt(delayEl.value) || 0); const bytesRequested = Math.max(0, parseInt(bytesEl.value) || 0); if(!target){ resultSummary.textContent='Please provide a target/path/command/host'; resultDetail.textContent=''; return; } const decision = policyDecision(role,op,target); const ts = new Date().toLocaleString(); metrics.total += 1; if(decision.allow){ metrics.allowed += 1; resultSummary.textContent = 'Policy decision: Allowed — executing (simulated)'; resultDetail.textContent = 'Running...'; const res = await simulateExecution(role,op,target,payload,delay,bytesRequested); resultDetail.textContent = res.output; resultSummary.textContent = `Result: Success (latency ${res.latency} ms, bytes ${res.bytes})`; metrics.totalLatency += res.latency; metrics.bytes += res.bytes; appendAudit({ time:ts, role, op, target, allowed:true, latency:res.latency, bytes:res.bytes, reason:decision.reason }); } else { metrics.denied += 1; resultSummary.textContent = 'Result: Denied by policy'; resultDetail.textContent = `Denied: ${decision.reason}`; appendAudit({ time:ts, role, op, target, allowed:false, latency:0, bytes:0, reason:decision.reason }); } updateMetrics(); });
+    runBtn && runBtn.addEventListener('click', async () => {
+      const role = roleEl.value;
+      const op = opEl.value;
+      const target = targetEl.value.trim();
+      const payload = payloadEl.value;
+      const delay = Math.max(0, parseInt(delayEl.value) || 0);
+      const bytesRequested = Math.max(0, parseInt(bytesEl.value) || 0);
 
-    clearLog.addEventListener('click', ()=>{ audit=[]; metrics={ total:0, allowed:0, denied:0, totalLatency:0, bytes:0 }; auditBody.innerHTML=''; updateMetrics(); resultSummary.textContent='Cleared audit log'; resultDetail.textContent=''; });
+      if(!target){
+        resultSummary.textContent = 'Please provide a target/path/command/host';
+        resultDetail.textContent = '';
+        return;
+      }
 
-    exportCsv.addEventListener('click', ()=>{ if(audit.length===0){ alert('No audit entries to export'); return; } const rows=[['time','role','op','target','allowed','latency_ms','bytes','reason']]; audit.forEach(r=> rows.push([r.time,r.role,r.op,r.target,r.allowed? 'Allowed':'Denied',r.latency,r.bytes,r.reason])); const csv = rows.map(r=> r.map(c=> '"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n'); const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'syscall_audit.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); });
+      const decision = policyDecision(role, op, target);
+      const ts = new Date().toLocaleString();
+
+      metrics.total += 1;
+      if(decision.allow){
+        metrics.allowed += 1;
+        resultSummary.textContent = 'Policy decision: Allowed — executing (simulated)';
+        resultDetail.textContent = 'Running...';
+        const res = await simulateExecution(role, op, target, payload, delay, bytesRequested);
+        resultDetail.textContent = res.output;
+        resultSummary.textContent = `Result: Success (latency ${res.latency} ms, bytes ${res.bytes})`;
+        metrics.totalLatency += res.latency;
+        metrics.bytes += res.bytes;
+        appendAudit({ time: ts, role, op, target, allowed: true, latency: res.latency, bytes: res.bytes, reason: decision.reason });
+      } else {
+        metrics.denied += 1;
+        resultSummary.textContent = 'Result: Denied by policy';
+        resultDetail.textContent = `Denied: ${decision.reason}`;
+        appendAudit({ time: ts, role, op, target, allowed: false, latency: 0, bytes: 0, reason: decision.reason });
+      }
+
+      updateMetrics();
+    });
+
+    clearLog && clearLog.addEventListener('click', () => {
+      audit = [];
+      metrics = { total:0, allowed:0, denied:0, totalLatency:0, bytes:0 };
+      if(auditBody) auditBody.innerHTML = '';
+      updateMetrics();
+      resultSummary.textContent = 'Cleared audit log';
+      resultDetail.textContent = '';
+    });
+
+    exportCsv && exportCsv.addEventListener('click', () => {
+      if(audit.length === 0){ alert('No audit entries to export'); return; }
+      const rows = [['time','role','op','target','allowed','latency_ms','bytes','reason']];
+      audit.forEach(r => rows.push([r.time, r.role, r.op, r.target, r.allowed? 'Allowed':'Denied', r.latency, r.bytes, r.reason]));
+      const csv = rows.map(r=> r.map(c=> '"' + String(c).replace(/"/g,'""') + '"').join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'syscall_audit.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
 
     updateMetrics();
   </script>
